@@ -15,26 +15,26 @@ from datasets import load_metric
 os.environ["WANDB_DISABLED"] = "true"
 
 # directory and file paths
-train_text_file = "../input/devanagiri-dataset/train.txt"
-test_text_file = "../input/devanagiri-dataset/test.txt"
-val_text_file = "../input/devanagiri-dataset/val.txt"
-root_dir = "../input/devanagiri-dataset/HindiSeg/"
+train_text_file = "/home/venkat/trocr_hindi/dataset/train.txt"
+test_text_file = "/home/venkat/trocr_hindi/dataset/test.txt"
+val_text_file = "/home/venkat/trocr_hindi/dataset/val.txt"
+root_dir = "/home/venkat/trocr_hindi/dataset/HindiSeg/"
 
 def dataset_generator(data_path):
     with open(data_path) as f:
         dataset = f.readlines()
-    counter = 0
+    # counter = 0
 
     dataset_list = []
     for i in range(len(dataset)):
-        if counter > 5000:
-            break
+        # if counter > 5000:
+        #     break
         image_id = dataset[i].split("\n")[0].split(' ')[0].strip()
         # vocab_id = int(dataset[i].split(",")[1].strip())
         text = dataset[i].split("\n")[0].split(' ')[1].strip()
         row = [image_id, text]
         dataset_list.append(row)
-        counter += 1
+        # counter += 1
 
     dataset_df = pd.DataFrame(dataset_list, columns=['file_name', 'text'])
     # dataset_df.head()
