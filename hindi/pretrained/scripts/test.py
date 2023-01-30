@@ -22,5 +22,5 @@ def preview(image_path):
     plt.imshow(image)
     print(generated_text)
     
-image_path = "../input/devanagiri-dataset/HindiSeg/HindiSeg/test/11/1/1.jpg"
+image_path = "/home/venkat/trocr_hindi/dataset/HindiSeg/test/11/1/1.jpg"
 preview(image_path=image_path)
