@@ -18,7 +18,7 @@ os.environ["WANDB_DISABLED"] = "true"
 train_text_file = "/home/venkat/trocr_hindi/dataset/train.txt"
 test_text_file = "/home/venkat/trocr_hindi/dataset/test.txt"
 val_text_file = "/home/venkat/trocr_hindi/dataset/val.txt"
-root_dir = "/home/venkat/trocr_hindi/dataset/HindiSeg/"
+root_dir = "/home/venkat/trocr_hindi/dataset/"
 
 def dataset_generator(data_path):
     with open(data_path) as f:
