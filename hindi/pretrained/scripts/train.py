@@ -13,28 +13,29 @@ from transformers import Seq2SeqTrainer, Seq2SeqTrainingArguments
 from transformers import default_data_collator
 from datasets import load_metric
 os.environ["WANDB_DISABLED"] = "true"
+# torch.cuda.empty_cache()
 
 # directory and file paths
 train_text_file = "/home/venkat/trocr_hindi/dataset/train.txt"
 test_text_file = "/home/venkat/trocr_hindi/dataset/test.txt"
 val_text_file = "/home/venkat/trocr_hindi/dataset/val.txt"
-root_dir = "/home/venkat/trocr_hindi/dataset/HindiSeg/"
+root_dir = "/home/venkat/trocr_hindi/dataset/"
 
 def dataset_generator(data_path):
     with open(data_path) as f:
         dataset = f.readlines()
-    # counter = 0
+    counter = 0
 
     dataset_list = []
     for i in range(len(dataset)):
-        # if counter > 5000:
-        #     break
+        if counter > 30000:
+            break
         image_id = dataset[i].split("\n")[0].split(' ')[0].strip()
         # vocab_id = int(dataset[i].split(",")[1].strip())
         text = dataset[i].split("\n")[0].split(' ')[1].strip()
         row = [image_id, text]
         dataset_list.append(row)
-        # counter += 1
+        counter += 1
 
     dataset_df = pd.DataFrame(dataset_list, columns=['file_name', 'text'])
     # dataset_df.head()
@@ -110,11 +111,12 @@ print("Number of training examples:", len(train_dataset))
 print("Number of validation examples:", len(eval_dataset))
 
 training_args = Seq2SeqTrainingArguments(
+    num_train_epochs=50,
     predict_with_generate=True,
     evaluation_strategy="steps",
-    per_device_train_batch_size=8,
-    per_device_eval_batch_size=8,
-    output_dir="./",
+    per_device_train_batch_size=2,
+    per_device_eval_batch_size=4,
+    output_dir="./checkpoints/",
     logging_steps=2,
     save_steps=200,
     eval_steps=100,
