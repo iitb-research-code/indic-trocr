@@ -12,7 +12,7 @@ feature_extractor=ViTFeatureExtractor.from_pretrained(encode)
 tokenizer = RobertaTokenizer.from_pretrained(decode)
 processor = TrOCRProcessor(feature_extractor=feature_extractor, tokenizer=tokenizer)
 
-model = VisionEncoderDecoderModel.from_pretrained("checkpoint-800")
+model = VisionEncoderDecoderModel.from_pretrained("checkpoint-20600")
 
 def preview(image_path):
     image = Image.open(image_path).convert("RGB")

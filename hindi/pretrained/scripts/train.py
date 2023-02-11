@@ -121,7 +121,7 @@ training_args = Seq2SeqTrainingArguments(
     per_device_eval_batch_size=4,
     output_dir="./",
     logging_steps=2,
-    save_steps=200,
+    save_steps=2000,
     eval_steps=100,
 )
 
