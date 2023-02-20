@@ -1,0 +1,9 @@
+transformers
+datasets
+jiwer
+torch
+torchvision
+opencv-python
+tokenizers
+huggingface-hub
+matplotlib
