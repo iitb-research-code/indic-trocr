@@ -1,2 +1,4 @@
 # indic-trocr
-Transformer OCR for Indian Languages
+Transformer OCR pipeline for Kannada
+
+RoBERTa decoder model - https://huggingface.co/RahulRaman/Kannada-LM-DeBERTa 
