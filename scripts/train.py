@@ -26,13 +26,21 @@ def dataset_generator(data_path):
         dataset = f.readlines()
     # counter = 0
 
+    with open("/kaggle/input/iiit-tamil-handwritten-dataset/vocab.txt") as f:
+        vocab = f.readlines()
+
+    for j in range(len(vocab)):
+        vocab[j] = vocab[j].split("\n")[0].strip()
+
     dataset_list = []
     for i in range(len(dataset)):
         # if counter > 30000:
         #     break
-        image_id = dataset[i].split("\n")[0].split(' ')[0].strip()
+        image_id = dataset[i].split("\n")[0].split(',')[0].strip()
         # vocab_id = int(dataset[i].split(",")[1].strip())
-        text = dataset[i].split("\n")[0].split(' ')[1].strip()
+        vocab_id = int(dataset[i].split("\n")[0].split(',')[1].strip())
+        # text = dataset[i].split("\n")[0].split(' ')[1].strip()
+        text = vocab[vocab_id]
         row = [image_id, text]
         dataset_list.append(row)
         # counter += 1
@@ -77,7 +85,8 @@ class IAMDataset(Dataset):
 
 
 encode = 'google/vit-base-patch16-224-in21k'
-decode = 'flax-community/roberta-hindi'
+decode = 'apkbala107/tamilroberta'
+# decode = 'd42kw01f/Tamil-RoBERTa'
 
 feature_extractor=ViTFeatureExtractor.from_pretrained(encode)
 tokenizer = RobertaTokenizer.from_pretrained(decode)
@@ -114,14 +123,12 @@ training_args = Seq2SeqTrainingArguments(
     num_train_epochs=50,
     predict_with_generate=True,
     evaluation_strategy="steps",
-    per_device_train_batch_size=2,
-    per_device_eval_batch_size=4,
-    output_dir="./checkpoints/",
     per_device_train_batch_size=4,
     per_device_eval_batch_size=4,
-    output_dir="./",
+    output_dir="./checkpoints/",
     logging_steps=2,
     save_steps=2000,
+    save_total_limit=10,
     eval_steps=100,
 )
 
