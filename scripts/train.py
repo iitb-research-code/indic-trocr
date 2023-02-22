@@ -26,7 +26,7 @@ def dataset_generator(data_path):
         dataset = f.readlines()
     # counter = 0
 
-    with open("/kaggle/input/iiit-tamil-handwritten-dataset/vocab.txt") as f:
+    with open("/home/venkat/dishant/tamil_dataset/vocab.txt") as f:
         vocab = f.readlines()
 
     for j in range(len(vocab)):
