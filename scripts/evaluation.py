@@ -37,7 +37,7 @@ feature_extractor=ViTFeatureExtractor.from_pretrained(encode)
 tokenizer = RobertaTokenizer.from_pretrained(decode)
 processor = TrOCRProcessor(feature_extractor=feature_extractor, tokenizer=tokenizer)
 
-model = VisionEncoderDecoderModel.from_pretrained("checkpoints/checkpoint-53600")
+model = VisionEncoderDecoderModel.from_pretrained("/home/venkat/trocr_hindi/indic-trocr/hindi/pretrained/scripts/checkpoints_2/checkpoint-53600")
 
 wer = []
 cer = []
@@ -52,8 +52,10 @@ for i in range(len(test_df)):
     generated_text = processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
     
     wer_score = fastwer.score([generated_text], [ground_truth])
+    print(f"WER: {wer_score}")
     wer.append(wer_score)
     cer_score = fastwer.score([generated_text], [ground_truth], char_level=True)
+    print(f"CER: {cer_score}")
     cer.append(cer_score)
     
 print(f"WER SCORE : {sum(wer)/len(wer)}")
