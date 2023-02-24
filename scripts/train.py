@@ -85,8 +85,8 @@ class IAMDataset(Dataset):
 
 
 encode = 'google/vit-base-patch16-224-in21k'
-decode = 'apkbala107/tamilroberta'
-# decode = 'd42kw01f/Tamil-RoBERTa'
+# decode = 'apkbala107/tamilroberta'
+decode = 'd42kw01f/Tamil-RoBERTa'
 
 feature_extractor=ViTFeatureExtractor.from_pretrained(encode)
 tokenizer = RobertaTokenizer.from_pretrained(decode)
@@ -125,7 +125,7 @@ training_args = Seq2SeqTrainingArguments(
     evaluation_strategy="steps",
     per_device_train_batch_size=4,
     per_device_eval_batch_size=4,
-    output_dir="./checkpoints/",
+    output_dir="../../tamil_checkpoints/",
     logging_steps=2,
     save_steps=2000,
     save_total_limit=10,
