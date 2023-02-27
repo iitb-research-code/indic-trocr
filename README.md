@@ -26,5 +26,9 @@ pip install requirements.txt
 python train.py
 ```
 
+## Results for TrOCR Hindi after 53600 Steps
+---
+**Character Error Rate (CER) : 10.30569921516827**
 
+**Word Error Rate (WER) : 43.39886549071412**
 
