@@ -16,34 +16,36 @@ os.environ["WANDB_DISABLED"] = "true"
 # torch.cuda.empty_cache()
 
 # directory and file paths
-train_text_file = "/home/venkat/trocr_hindi/dataset/train.txt"
-test_text_file = "/home/venkat/trocr_hindi/dataset/test.txt"
-val_text_file = "/home/venkat/trocr_hindi/dataset/val.txt"
-root_dir = "/home/venkat/trocr_hindi/dataset/"
+train_text_file = "/content/sample_data/kn/train.txt"
+test_text_file = "/content/sample_data/kn/test.txt"
+val_text_file = "/content/sample_data/kn/val.txt"
+root_dir = "/content/sample_data/kn/"
 
-def dataset_generator(data_path):
+def dataset_generator(data_path, set_name):
     with open(data_path) as f:
         dataset = f.readlines()
-    # counter = 0
+
+    with open("/content/sample_data/kn/vocab.txt") as f:
+        vocab = f.readlines()
+
+    for j in range(len(vocab)):
+        vocab[j] = vocab[j].split("\n")[0].strip()
 
     dataset_list = []
     for i in range(len(dataset)):
-        # if counter > 30000:
-        #     break
-        image_id = dataset[i].split("\n")[0].split(' ')[0].strip()
-        # vocab_id = int(dataset[i].split(",")[1].strip())
-        text = dataset[i].split("\n")[0].split(' ')[1].strip()
+        image_id = dataset[i].split("\n")[0].split(',')[0].strip()
+        image_id = set_name + "/" + image_id
+        vocab_id = int(dataset[i].split("\n")[0].split(',')[1].strip())
+        text = vocab[vocab_id]
         row = [image_id, text]
         dataset_list.append(row)
-        # counter += 1
 
     dataset_df = pd.DataFrame(dataset_list, columns=['file_name', 'text'])
-    # dataset_df.head()
     return dataset_df
     
-train_df = dataset_generator(train_text_file)
-test_df = dataset_generator(test_text_file)
-val_df = dataset_generator(val_text_file)
+train_df = dataset_generator(train_text_file, 'train')
+test_df = dataset_generator(test_text_file, 'test')
+val_df = dataset_generator(val_text_file, 'val')
 
 print(f"Train, Test & Val shape: {train_df.shape, test_df.shape, val_df.shape}")
 
@@ -77,7 +79,7 @@ class IAMDataset(Dataset):
 
 
 encode = 'google/vit-base-patch16-224-in21k'
-decode = 'flax-community/roberta-hindi'
+decode = 'Chakita/KannadaBERT'
 
 feature_extractor=ViTFeatureExtractor.from_pretrained(encode)
 tokenizer = RobertaTokenizer.from_pretrained(decode)
@@ -114,14 +116,12 @@ training_args = Seq2SeqTrainingArguments(
     num_train_epochs=50,
     predict_with_generate=True,
     evaluation_strategy="steps",
-    per_device_train_batch_size=2,
-    per_device_eval_batch_size=4,
-    output_dir="./checkpoints/",
     per_device_train_batch_size=4,
     per_device_eval_batch_size=4,
-    output_dir="./",
+    output_dir="./kn_checkpoints/",
     logging_steps=2,
     save_steps=2000,
+    save_total_limit=10,
     eval_steps=100,
 )
 
