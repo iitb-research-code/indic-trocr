@@ -12,6 +12,7 @@ from transformers import TrOCRProcessor
 from transformers import Seq2SeqTrainer, Seq2SeqTrainingArguments
 from transformers import default_data_collator
 from datasets import load_metric
+import evaluate
 os.environ["WANDB_DISABLED"] = "true"
 # torch.cuda.empty_cache()
 
@@ -125,7 +126,7 @@ training_args = Seq2SeqTrainingArguments(
     eval_steps=100,
 )
 
-cer_metric = load_metric("cer")
+cer_metric = evaluate.load("cer")
 
 def compute_metrics(pred):
     labels_ids = pred.label_ids
