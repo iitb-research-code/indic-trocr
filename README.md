@@ -26,5 +26,11 @@ pip install requirements.txt
 python train.py
 ```
 
+## Evaluation results
 
+```
+# For 56000 checkpoints 
+CER - 2.5247169548633086
+WER - 17.978385251112524
+```
 
