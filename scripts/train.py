@@ -17,9 +17,9 @@ os.environ["WANDB_DISABLED"] = "true"
 # torch.cuda.empty_cache()
 
 # directory and file paths
-train_text_file = "/home/venkat/trocr_hindi/dataset/train.txt"
-test_text_file = "/home/venkat/trocr_hindi/dataset/test.txt"
-val_text_file = "/home/venkat/trocr_hindi/dataset/val.txt"
+train_text_file = "/data/BADRI/IHTR/trainset/malayalam/train.txt"
+test_text_file = "/data/BADRI/IHTR/testset_small/Malayalam/test.txt"
+val_text_file = "/data/BADRI/IHTR/validationset_small/malayalam/val.txt"
 root_dir = "/home/venkat/trocr_hindi/dataset/"
 
 def dataset_generator(data_path):
