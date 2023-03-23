@@ -77,7 +77,7 @@ class IAMDataset(Dataset):
 
 
 encode = 'google/vit-base-patch16-224-in21k'
-decode = 'flax-community/roberta-hindi'
+decode = 'RahulRaman/Malayalam-LM-RoBERTa'
 
 feature_extractor=ViTFeatureExtractor.from_pretrained(encode)
 tokenizer = RobertaTokenizer.from_pretrained(decode)
@@ -111,7 +111,7 @@ print("Number of training examples:", len(train_dataset))
 print("Number of validation examples:", len(eval_dataset))
 
 training_args = Seq2SeqTrainingArguments(
-    num_train_epochs=50,
+    num_train_epochs=10,
     predict_with_generate=True,
     evaluation_strategy="steps",
     per_device_train_batch_size=2,
