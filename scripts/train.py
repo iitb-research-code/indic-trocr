@@ -17,23 +17,31 @@ os.environ["WANDB_DISABLED"] = "true"
 # torch.cuda.empty_cache()
 
 # directory and file paths
-train_text_file = "/data/BADRI/IHTR/trainset/malayalam/train.txt"
-test_text_file = "/data/BADRI/IHTR/testset_small/Malayalam/test.txt"
-val_text_file = "/data/BADRI/IHTR/validationset_small/malayalam/val.txt"
-root_dir = "/home/venkat/trocr_hindi/dataset/"
+train_text_file = "/home/pageocr/trocr/malayalam/dataset/train.txt"
+test_text_file = "/home/pageocr/trocr/malayalam/dataset/test.txt"
+val_text_file = "/home/pageocr/trocr/malayalam/dataset/val.txt"
+root_dir = "/home/pageocr/trocr/malayalam/dataset/"
 
 def dataset_generator(data_path):
     with open(data_path) as f:
         dataset = f.readlines()
     # counter = 0
 
+    with open("/home/pageocr/trocr/malayalam/dataset/vocab.txt") as f:
+        vocab = f.readlines()
+
+    for j in range(len(vocab)):
+        vocab[j] = vocab[j].split("\n")[0].strip()
+
     dataset_list = []
     for i in range(len(dataset)):
         # if counter > 30000:
         #     break
-        image_id = dataset[i].split("\n")[0].split(' ')[0].strip()
+        image_id = dataset[i].split("\n")[0].split(',')[0].strip()
         # vocab_id = int(dataset[i].split(",")[1].strip())
-        text = dataset[i].split("\n")[0].split(' ')[1].strip()
+        vocab_id = int(dataset[i].split("\n")[0].split(',')[1].strip())
+        # text = dataset[i].split("\n")[0].split(' ')[1].strip()
+        text = vocab[vocab_id]
         row = [image_id, text]
         dataset_list.append(row)
         # counter += 1
@@ -41,7 +49,7 @@ def dataset_generator(data_path):
     dataset_df = pd.DataFrame(dataset_list, columns=['file_name', 'text'])
     # dataset_df.head()
     return dataset_df
-    
+
 train_df = dataset_generator(train_text_file)
 test_df = dataset_generator(test_text_file)
 val_df = dataset_generator(val_text_file)
@@ -59,15 +67,15 @@ class IAMDataset(Dataset):
         return len(self.df)
 
     def __getitem__(self, idx):
-        # get file name + text 
+        # get file name + text
         file_name = self.df['file_name'][idx]
         text = self.df['text'][idx]
         # prepare image (i.e. resize + normalize)
         image = Image.open(self.root_dir + file_name).convert("RGB")
         pixel_values = self.processor(image, return_tensors="pt").pixel_values
         # add labels (input_ids) by encoding the text
-        labels = self.processor.tokenizer(text, 
-                                          padding="max_length", 
+        labels = self.processor.tokenizer(text,
+                                          padding="max_length",
                                           max_length=self.max_target_length).input_ids
         # important: make sure that PAD tokens are ignored by the loss function
         labels = [label if label != self.processor.tokenizer.pad_token_id else -100 for label in labels]
@@ -117,8 +125,7 @@ training_args = Seq2SeqTrainingArguments(
     evaluation_strategy="steps",
     per_device_train_batch_size=2,
     per_device_eval_batch_size=4,
-    output_dir="./checkpoints/",
-    per_device_train_batch_size=4,
+    output_dir="/home/pageocr/trocr/malayalam/checkpoints/",
     per_device_eval_batch_size=4,
     output_dir="./",
     logging_steps=2,
@@ -152,5 +159,5 @@ trainer = Seq2SeqTrainer(
 
 trainer.train()
 
-os.makedirs("model/")
-model.save_pretrained("model/")
+os.makedirs("/home/pageocr/trocr/malayalam/checkpoints/model/")
+model.save_pretrained("/home/pageocr/trocr/malayalam/checkpoints/model/")
