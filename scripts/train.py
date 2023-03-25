@@ -157,5 +157,6 @@ trainer = Seq2SeqTrainer(
 )
 
 trainer.train()
+
 os.makedirs("/home/pageocr/trocr/malayalam/checkpoints/model/")
 model.save_pretrained("/home/pageocr/trocr/malayalam/checkpoints/model/")
