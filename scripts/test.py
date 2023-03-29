@@ -21,9 +21,9 @@ def preview(image_path):
     generated_text = processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
     # plt.imshow(image)
     print(generated_text, ",", img)
-    
+
 with open("/data/BADRI/IHTR/testset_small/devanagari/test.txt") as f:
     for line in f:
-        img = line[5:2]
-        image_path = "/data/BADRI/IHTR/testset_small/devanagari/images/{}".format(img)
+        img = line[5:]
+        image_path = "/data/BADRI/IHTR/testset_small/devanagari/images/{}".format(img.strip('\n'))
         preview(image_path=image_path)
