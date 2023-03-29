@@ -24,6 +24,6 @@ def preview(image_path):
     
 with open("/data/BADRI/IHTR/testset_small/devanagari/test.txt") as f:
     for line in f:
-        img = line[5:]
+        img = line[5:2]
         image_path = "/data/BADRI/IHTR/testset_small/devanagari/images/{}".format(img)
         preview(image_path=image_path)
