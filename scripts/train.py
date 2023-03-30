@@ -16,10 +16,10 @@ os.environ["WANDB_DISABLED"] = "true"
 # torch.cuda.empty_cache()
 
 # directory and file paths
-train_text_file = "/home/venkat/trocr_hindi/dataset/train.txt"
-test_text_file = "/home/venkat/trocr_hindi/dataset/test.txt"
-val_text_file = "/home/venkat/trocr_hindi/dataset/val.txt"
-root_dir = "/home/venkat/trocr_hindi/dataset/"
+train_text_file = "/home/venkat/trocr_hindi/telugu/dataset/train.txt"
+test_text_file = "/home/venkat/trocr_hindi/telugu/dataset/test.txt"
+val_text_file = "/home/venkat/trocr_hindi/telugu/dataset/val.txt"
+root_dir = "/home/venkat/trocr_hindi/telugu/dataset/"
 
 def dataset_generator(data_path):
     with open(data_path) as f:
@@ -77,7 +77,7 @@ class IAMDataset(Dataset):
 
 
 encode = 'google/vit-base-patch16-224-in21k'
-decode = 'flax-community/roberta-hindi'
+decode = 'RahulRaman/Telugu-LM-RoBERTa'
 
 feature_extractor=ViTFeatureExtractor.from_pretrained(encode)
 tokenizer = RobertaTokenizer.from_pretrained(decode)
