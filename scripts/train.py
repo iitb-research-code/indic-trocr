@@ -12,27 +12,36 @@ from transformers import TrOCRProcessor
 from transformers import Seq2SeqTrainer, Seq2SeqTrainingArguments
 from transformers import default_data_collator
 from datasets import load_metric
+import evaluate
 os.environ["WANDB_DISABLED"] = "true"
 # torch.cuda.empty_cache()
 
 # directory and file paths
-train_text_file = "/home/venkat/trocr_hindi/dataset/train.txt"
-test_text_file = "/home/venkat/trocr_hindi/dataset/test.txt"
-val_text_file = "/home/venkat/trocr_hindi/dataset/val.txt"
-root_dir = "/home/venkat/trocr_hindi/dataset/"
+train_text_file = "/home/pageocr/trocr/bengali/dataset/train.txt"
+test_text_file = "/home/pageocr/trocr/bengali/dataset/test.txt"
+val_text_file = "/home/pageocr/trocr/bengali/dataset/val.txt"
+root_dir = "/home/pageocr/trocr/bengali/dataset/"
 
 def dataset_generator(data_path):
     with open(data_path) as f:
         dataset = f.readlines()
     # counter = 0
 
+    with open("/home/pageocr/trocr/bengali/dataset/vocab.txt") as f:
+        vocab = f.readlines()
+
+    for j in range(len(vocab)):
+        vocab[j] = vocab[j].split("\n")[0].strip()
+
     dataset_list = []
     for i in range(len(dataset)):
         # if counter > 30000:
         #     break
-        image_id = dataset[i].split("\n")[0].split(' ')[0].strip()
+        image_id = dataset[i].split("\n")[0].split(',')[0].strip()
         # vocab_id = int(dataset[i].split(",")[1].strip())
-        text = dataset[i].split("\n")[0].split(' ')[1].strip()
+        vocab_id = int(dataset[i].split("\n")[0].split(',')[1].strip())
+        # text = dataset[i].split("\n")[0].split(' ')[1].strip()
+        text = vocab[vocab_id]
         row = [image_id, text]
         dataset_list.append(row)
         # counter += 1
@@ -40,7 +49,7 @@ def dataset_generator(data_path):
     dataset_df = pd.DataFrame(dataset_list, columns=['file_name', 'text'])
     # dataset_df.head()
     return dataset_df
-    
+
 train_df = dataset_generator(train_text_file)
 test_df = dataset_generator(test_text_file)
 val_df = dataset_generator(val_text_file)
@@ -58,15 +67,15 @@ class IAMDataset(Dataset):
         return len(self.df)
 
     def __getitem__(self, idx):
-        # get file name + text 
+        # get file name + text
         file_name = self.df['file_name'][idx]
         text = self.df['text'][idx]
         # prepare image (i.e. resize + normalize)
         image = Image.open(self.root_dir + file_name).convert("RGB")
         pixel_values = self.processor(image, return_tensors="pt").pixel_values
         # add labels (input_ids) by encoding the text
-        labels = self.processor.tokenizer(text, 
-                                          padding="max_length", 
+        labels = self.processor.tokenizer(text,
+                                          padding="max_length",
                                           max_length=self.max_target_length).input_ids
         # important: make sure that PAD tokens are ignored by the loss function
         labels = [label if label != self.processor.tokenizer.pad_token_id else -100 for label in labels]
@@ -77,7 +86,7 @@ class IAMDataset(Dataset):
 
 
 encode = 'google/vit-base-patch16-224-in21k'
-decode = 'flax-community/roberta-hindi'
+decode = 'l3cube-pune/bengali-bert'
 
 feature_extractor=ViTFeatureExtractor.from_pretrained(encode)
 tokenizer = RobertaTokenizer.from_pretrained(decode)
@@ -111,21 +120,19 @@ print("Number of training examples:", len(train_dataset))
 print("Number of validation examples:", len(eval_dataset))
 
 training_args = Seq2SeqTrainingArguments(
-    num_train_epochs=50,
+    num_train_epochs=10,
     predict_with_generate=True,
     evaluation_strategy="steps",
-    per_device_train_batch_size=2,
-    per_device_eval_batch_size=4,
-    output_dir="./checkpoints/",
-    per_device_train_batch_size=4,
-    per_device_eval_batch_size=4,
-    output_dir="./",
+    per_device_train_batch_size=64,
+    per_device_eval_batch_size=64,
+    output_dir="/home/pageocr/trocr/bengali/checkpoints/",
     logging_steps=2,
     save_steps=2000,
+    save_total_limit=10,
     eval_steps=100,
 )
 
-cer_metric = load_metric("cer")
+cer_metric = evaluate.load("cer")
 
 def compute_metrics(pred):
     labels_ids = pred.label_ids
@@ -151,5 +158,5 @@ trainer = Seq2SeqTrainer(
 
 trainer.train()
 
-os.makedirs("model/")
-model.save_pretrained("model/")
+os.makedirs("/home/pageocr/trocr/bengali/checkpoints/model/")
+model.save_pretrained("/home/pageocr/trocr/bengali/checkpoints/model/")
