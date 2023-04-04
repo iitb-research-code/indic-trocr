@@ -1,4 +1,6 @@
-# Indic TrOCR - Transformer based OCR for Indian Languages
+# Done for Hindi
+
+## Indic TrOCR - Transformer based OCR for Indian Languages
 
 TrOCR is an OCR (Optical Character Recognition) model proposed by Minghao Li et al. in their paper titled <a href="https://arxiv.org/abs/2109.10282">TrOCR: Transformer-based Optical Character Recognition with Pre-trained Models</a>. This model is composed of an image Transformer encoder and an autoregressive text Transformer decoder, enabling it to accurately perform OCR.
 
