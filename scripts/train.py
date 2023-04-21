@@ -90,7 +90,7 @@ eval_dataset = IAMDataset(root_dir=root_dir,
                            df=test_df,
                            processor=processor)
 
-model = VisionEncoderDecoderModel.from_encoder_decoder_pretrained(encode, decode))
+model = VisionEncoderDecoderModel.from_encoder_decoder_pretrained(encode, decode)
 
 model.config.decoder_start_token_id = processor.tokenizer.cls_token_id
 model.config.pad_token_id = processor.tokenizer.pad_token_id
