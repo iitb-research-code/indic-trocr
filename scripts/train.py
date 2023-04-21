@@ -15,8 +15,6 @@ from datasets import load_metric
 os.environ["WANDB_DISABLED"] = "true"
 # torch.cuda.empty_cache()
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
 # directory and file paths
 train_text_file = "/home/pageocr/trocr/telugu_dataset/train.txt"
 test_text_file = "/home/pageocr/trocr/telugu_dataset/test.txt"
@@ -73,7 +71,7 @@ class IAMDataset(Dataset):
         # important: make sure that PAD tokens are ignored by the loss function
         labels = [label if label != self.processor.tokenizer.pad_token_id else -100 for label in labels]
 
-        encoding = {"pixel_values": pixel_values.squeeze().to(device), "labels": torch.tensor(labels)}
+        encoding = {"pixel_values": pixel_values.squeeze(), "labels": torch.tensor(labels)}
         # print(encoding)
         return encoding
 
@@ -92,7 +90,7 @@ eval_dataset = IAMDataset(root_dir=root_dir,
                            df=test_df,
                            processor=processor)
 
-model = VisionEncoderDecoderModel.from_encoder_decoder_pretrained(encode, decode).to(device)
+model = VisionEncoderDecoderModel.from_encoder_decoder_pretrained(encode, decode))
 
 model.config.decoder_start_token_id = processor.tokenizer.cls_token_id
 model.config.pad_token_id = processor.tokenizer.pad_token_id
