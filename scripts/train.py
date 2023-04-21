@@ -18,10 +18,10 @@ os.environ["WANDB_DISABLED"] = "true"
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # directory and file paths
-train_text_file = "/data/BADRI/IHTR/cvit/telugu_dataset/train.txt"
-test_text_file = "/data/BADRI/IHTR/cvit/telugu_dataset/test.txt"
-val_text_file = "/data/BADRI/IHTR/cvit/telugu_dataset/val.txt"
-root_dir = "/data/BADRI/IHTR/cvit/telugu_dataset"
+train_text_file = "/home/pageocr/trocr/telugu_dataset/train.txt"
+test_text_file = "/home/pageocr/trocr/telugu_dataset/test.txt"
+val_text_file = "/home/pageocr/trocr/telugu_dataset/val.txt"
+root_dir = "/home/pageocr/trocr/telugu_dataset/"
 
 def dataset_generator(data_path):
     with open(data_path) as f:
