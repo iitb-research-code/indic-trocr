@@ -18,10 +18,10 @@ os.environ["WANDB_DISABLED"] = "true"
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # directory and file paths
-train_text_file = "/home/venkat/trocr_hindi/telugu/dataset/train.txt"
-test_text_file = "/home/venkat/trocr_hindi/telugu/dataset/test.txt"
-val_text_file = "/home/venkat/trocr_hindi/telugu/dataset/val.txt"
-root_dir = "/home/venkat/trocr_hindi/telugu/dataset/"
+train_text_file = "/data/BADRI/IHTR/cvit/telugu_dataset/train.txt"
+test_text_file = "/data/BADRI/IHTR/cvit/telugu_dataset/test.txt"
+val_text_file = "/data/BADRI/IHTR/cvit/telugu_dataset/val.txt"
+root_dir = "/data/BADRI/IHTR/cvit/telugu_dataset"
 
 def dataset_generator(data_path):
     with open(data_path) as f:
@@ -116,11 +116,9 @@ training_args = Seq2SeqTrainingArguments(
     num_train_epochs=50,
     predict_with_generate=True,
     evaluation_strategy="steps",
-    per_device_train_batch_size=2,
-    per_device_eval_batch_size=4,
-    output_dir="./checkpoints/",
-    per_device_eval_batch_size=4,
-    output_dir="./",
+    per_device_train_batch_size=64,
+    per_device_eval_batch_size=64,
+    output_dir="/home/pageocr/trocr/telugu/checkpoints/",
     logging_steps=2,
     save_steps=2000,
     eval_steps=100,
@@ -153,5 +151,5 @@ trainer = Seq2SeqTrainer(
 
 trainer.train()
 
-os.makedirs("model/")
-model.save_pretrained("model/")
+os.makedirs("/home/pageocr/trocr/telugu/checkpoints/model/")
+model.save_pretrained("/home/pageocr/trocr/telugu/checkpoints/model/")
