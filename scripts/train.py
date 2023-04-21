@@ -81,7 +81,7 @@ class IAMDataset(Dataset):
 encode = 'google/vit-base-patch16-224-in21k'
 decode = 'RahulRaman/Telugu-LM-RoBERTa'
 
-feature_extractor=ViTFeatureExtractor.from_pretrained(encode).to(device)
+feature_extractor=ViTFeatureExtractor.from_pretrained(encode)
 tokenizer = RobertaTokenizer.from_pretrained(decode)
 processor = TrOCRProcessor(feature_extractor=feature_extractor, tokenizer=tokenizer)
 
