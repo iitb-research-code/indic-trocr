@@ -146,7 +146,6 @@ trainer = Seq2SeqTrainer(
     train_dataset=train_dataset,
     eval_dataset=eval_dataset,
     data_collator=default_data_collator,
-    device=device,
 )
 
 trainer.train()
