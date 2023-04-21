@@ -15,6 +15,8 @@ from datasets import load_metric
 os.environ["WANDB_DISABLED"] = "true"
 # torch.cuda.empty_cache()
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 # directory and file paths
 train_text_file = "/home/venkat/trocr_hindi/telugu/dataset/train.txt"
 test_text_file = "/home/venkat/trocr_hindi/telugu/dataset/test.txt"
@@ -71,7 +73,7 @@ class IAMDataset(Dataset):
         # important: make sure that PAD tokens are ignored by the loss function
         labels = [label if label != self.processor.tokenizer.pad_token_id else -100 for label in labels]
 
-        encoding = {"pixel_values": pixel_values.squeeze(), "labels": torch.tensor(labels)}
+        encoding = {"pixel_values": pixel_values.squeeze().to(device), "labels": torch.tensor(labels)}
         # print(encoding)
         return encoding
 
@@ -79,7 +81,7 @@ class IAMDataset(Dataset):
 encode = 'google/vit-base-patch16-224-in21k'
 decode = 'RahulRaman/Telugu-LM-RoBERTa'
 
-feature_extractor=ViTFeatureExtractor.from_pretrained(encode)
+feature_extractor=ViTFeatureExtractor.from_pretrained(encode).to(device)
 tokenizer = RobertaTokenizer.from_pretrained(decode)
 processor = TrOCRProcessor(feature_extractor=feature_extractor, tokenizer=tokenizer)
 
@@ -90,7 +92,7 @@ eval_dataset = IAMDataset(root_dir=root_dir,
                            df=test_df,
                            processor=processor)
 
-model = VisionEncoderDecoderModel.from_encoder_decoder_pretrained(encode, decode)
+model = VisionEncoderDecoderModel.from_encoder_decoder_pretrained(encode, decode).to(device)
 
 model.config.decoder_start_token_id = processor.tokenizer.cls_token_id
 model.config.pad_token_id = processor.tokenizer.pad_token_id
@@ -117,7 +119,6 @@ training_args = Seq2SeqTrainingArguments(
     per_device_train_batch_size=2,
     per_device_eval_batch_size=4,
     output_dir="./checkpoints/",
-    per_device_train_batch_size=4,
     per_device_eval_batch_size=4,
     output_dir="./",
     logging_steps=2,
@@ -147,6 +148,7 @@ trainer = Seq2SeqTrainer(
     train_dataset=train_dataset,
     eval_dataset=eval_dataset,
     data_collator=default_data_collator,
+    device=device,
 )
 
 trainer.train()
