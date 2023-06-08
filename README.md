@@ -1,4 +1,4 @@
-# Done for Kannada
+# Done for Malayalam
 
 ## Indic TrOCR - Transformer based OCR for Indian Languages
 
