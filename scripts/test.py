@@ -5,8 +5,12 @@ from transformers import TrOCRProcessor
 from PIL import Image
 import matplotlib.pyplot as plt
 
-encode = 'google/vit-base-patch16-224-in21k'
-decode = 'flax-community/roberta-hindi'
+# Access a specific decoder by language
+language = 'Hindi'  # Replace with the desired language
+decoder = DECODERS.get(language, None)
+
+encode = ENCODER
+decode = decoder
 
 feature_extractor=ViTFeatureExtractor.from_pretrained(encode)
 tokenizer = RobertaTokenizer.from_pretrained(decode)
